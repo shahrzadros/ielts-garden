@@ -153,3 +153,105 @@ function openExercise(skill,scroll=true){
   if(scroll){el("exerciseTitle").focus({preventScroll:true});panel.scrollIntoView({behavior:"smooth",block:"start"});}
 }
 renderPlan();
+
+const journalLab = [
+  {
+    title: "Reading · Matching headings",
+    source: "IELTS Journal – Reading, pp. 59–64",
+    tip: "Skim each paragraph for its main purpose. A heading should cover the whole paragraph.",
+    prompt: "<p><b>A.</b> The town expected its new bicycle scheme to attract tourists. Usage records showed instead that most trips began between seven and nine in the morning near railway stations. Interviews confirmed that regular commuters accounted for most rentals.</p><p><b>B.</b> The busiest stations often ran out of bicycles before nine. To address this imbalance, the operator began moving bicycles from quiet stations to busy ones before the morning rush.</p><p>Match A and B with headings i–iii.<br>i. Moving bicycles to meet demand<br>ii. An unexpected group of users<br>iii. A campaign to attract visitors</p>",
+    qs: [["Paragraph A","ii","The findings identify commuters as the main users, contrary to expectations."],["Paragraph B","i","The paragraph explains how the operator redistributed bicycles."]]
+  },
+  {
+    title: "Reading · True / False / Not Given",
+    source: "IELTS Journal – Reading, pp. 46–50",
+    tip: "Find the relevant sentence and compare every part of the claim. Use Not Given when the text neither confirms nor contradicts it.",
+    prompt: "<p>From April to June, a library trialled Sunday opening at two branches. More people borrowed books on Sundays at the central branch than at the smaller branch. The council recorded borrowing totals throughout the trial but did not collect information about visitors’ reasons for using the library.</p>",
+    qs: [["The trial began in April.","True","The opening sentence gives April as the starting month."],["More people borrowed books on Sundays at the smaller branch.","False","The central branch had more Sunday borrowers."],["Most Sunday visitors used the library to study.","Not Given","The council did not collect their reasons for visiting."]]
+  },
+  {
+    title: "Reading · Note completion",
+    source: "IELTS Journal – Reading, pp. 76–80",
+    tip: "Predict the type of word needed in each gap, then scan for a paraphrase of the notes. Check the word limit.",
+    prompt: "<p>A pilot project cooled a school courtyard by planting deciduous trees and installing a pale canopy. The canopy provided shade immediately. The trees, which were initially too small to shade the seating area, were expected to become useful after five years. Staff measured surface temperature at midday to compare the shaded and exposed benches.</p><p>Use <b>no more than two words</b> from the passage for each gap.</p>",
+    qs: [["Immediate shade came from a ___.","pale canopy","The second sentence says the canopy provided shade immediately."],["Trees were expected to provide useful shade after ___.","five years","The third sentence gives the expected timescale."],["What did staff measure?","surface temperature","The final sentence names the measurement."]]
+  },
+  {
+    title: "Writing Task 2 · Opinion essay",
+    source: "IELTS Journal – Task 2, pp. 13–17, 26–33",
+    tip: "State how far you agree. For each body paragraph, connect the main claim to a reason and an example.",
+    prompt: "<p>Some people believe that cities should make public transport free for everyone. To what extent do you agree or disagree?</p><p>Write at least 250 words in about 40 minutes.</p>",
+    model: "<h4>Model position and paragraph</h4><p>Although free fares could help passengers on low incomes, I would prioritise reliable services and offer free travel to those who need it most.</p><p>Frequency matters because a free bus is of little use to someone whose shift ends after the last departure. For example, extending evening services near hospitals could give staff a practical alternative to driving. In such cases, improving the timetable is likely to make a greater difference than removing a fare from a service that people cannot use.</p><p><b>Self-check:</b> Does your second paragraph explain who should qualify for free fares and why? Does the conclusion restate the same position?</p>"
+  },
+  {
+    title: "Writing Task 2 · Causes and solutions",
+    source: "IELTS Journal – Task 2, pp. 22–24, 32–37",
+    tip: "Address both parts of the question. Link each proposed measure to a cause you identified.",
+    prompt: "<p>Many households throw away food they have bought. Why does this happen, and what can households and supermarkets do to reduce food waste?</p><p>Write at least 250 words in about 40 minutes.</p>",
+    model: "<h4>Model plan and paragraph</h4><p>Plan one paragraph on buying more than needed and one on practical changes by both groups.</p><p>Supermarkets could sell more fresh produce individually rather than in fixed packs. A person living alone might use two peppers in a week but be unable to finish a pack of six before they spoil. At home, checking the fridge before shopping would help shoppers buy only what they need. Together, these measures address both the quantities stores offer and the way households plan purchases.</p><p><b>Self-check:</b> Did you explain why overbuying occurs and propose a specific action for each group?</p>"
+  },
+  {
+    title: "Speaking · Part 1",
+    source: "IELTS Journal – Speaking, pp. 7–12",
+    tip: "Answer directly, then add one reason or a specific detail. Say your answers aloud before viewing the models.",
+    prompt: "<ol><li>Do you often read for pleasure?</li><li>Where do you usually read?</li><li>Have your reading habits changed?</li></ol>",
+    model: "<ol><li>Yes, especially on days off. I usually read a few chapters of a novel before bed.</li><li>I mostly read at home, but I take a book on the train if I know the journey will be long.</li><li>Yes. I used to read mainly for work, but lately I’ve started reading short stories to relax.</li></ol>"
+  },
+  {
+    title: "Speaking · Part 2",
+    source: "IELTS Journal – Speaking, pp. 30–36",
+    tip: "Use one minute to jot down keywords. Speak for up to two minutes, then transcribe and review a short section.",
+    prompt: "<p>Describe a practical skill someone taught you.</p><ul><li>What the skill was</li><li>Who taught you and where</li><li>What was difficult at first</li><li>How you use the skill now</li></ul>",
+    model: "<p>My aunt taught me to repair a torn seam when I was staying with her one summer. At first, I pulled the thread so tightly that the fabric bunched up. She showed me how to make small, even stitches and let me practise on an old shirt. A few days later, I fixed a pocket on my own jacket, and that was the first time I felt I could use the skill without help. Now I mend small tears before they get worse, and I find the whole process quite relaxing.</p><p><b>Extend your answer:</b> Describe one mistake you made and how you corrected it.</p>"
+  },
+  {
+    title: "Speaking · Part 3",
+    source: "IELTS Journal – Speaking, pp. 75–83",
+    tip: "Give a position, explain the reason and illustrate it. Make the comparison explicit when asked about past and present.",
+    prompt: "<ol><li>Do people learn practical skills differently today than in the past?</li><li>Should schools spend more time teaching practical skills?</li></ol>",
+    model: "<ol><li>Yes. In the past, people often learned from someone nearby, whereas now they can find a video for a very specific problem. A video is convenient, but an experienced person can spot mistakes that a beginner might miss.</li><li>I think schools should devote some time to practical skills because students can apply them immediately. A lesson on comparing prices, for instance, can help students understand percentages while making everyday decisions.</li></ol>"
+  }
+];
+
+const journalPanel = document.createElement("section");
+journalPanel.className = "card";
+journalPanel.id = "journal-practice";
+el("plan").after(journalPanel);
+
+function renderJournalPractice(index = 0) {
+  const lesson = journalLab[index];
+  const draftKey = "journal-practice-" + index;
+  journalPanel.innerHTML = '<h2>تمرین‌های IELTS Journal</h2><label for="journal-lesson">انتخاب تمرین</label> <select id="journal-lesson">'+journalLab.map((item,i)=>'<option value="'+i+'">'+item.title+'</option>').join("")+'</select><div class="english" lang="en"><h3>'+lesson.title+'</h3><p class="small">'+lesson.source+'</p><p>'+lesson.tip+'</p><div class="passage">'+lesson.prompt+'</div>'+(lesson.qs?fields(lesson.qs)+'<button id="journal-check">Check answers</button><p id="journal-score" role="status"></p>':'<label>Your answer or transcript<textarea id="journal-draft"></textarea></label>')+'<details><summary>Answer and explanation</summary>'+(lesson.qs?answers(lesson.qs):lesson.model)+'</details></div>';
+  el("journal-lesson").value = index;
+  el("journal-lesson").onchange = event => renderJournalPractice(Number(event.target.value));
+  if (lesson.qs) {
+    const inputs = [...journalPanel.querySelectorAll("[data-answer]")];
+    inputs.forEach((input,i) => input.value = state.drafts[draftKey]?.[i] ?? "");
+    journalPanel.oninput = event => {
+      if (!event.target.matches("[data-answer]")) return;
+      state.drafts[draftKey] = inputs.map(input => input.value);
+      save();
+    };
+    const normal = value => value.trim().toLowerCase().replace(/\s+/g," ");
+    el("journal-check").onclick = () => {
+      let score = 0;
+      inputs.forEach((input,i) => {
+        const correct = normal(input.value) === normal(lesson.qs[i][1]);
+        input.setAttribute("aria-invalid",String(!correct));
+        input.style.borderColor = correct ? "#337855" : "#a95036";
+        if (correct) score++;
+      });
+      el("journal-score").textContent = score+" / "+inputs.length+" correct";
+      journalPanel.querySelector("details").open = true;
+    };
+  } else {
+    journalPanel.oninput = null;
+    const draft = el("journal-draft");
+    draft.value = state.drafts[draftKey] ?? "";
+    draft.oninput = () => {
+      state.drafts[draftKey] = draft.value;
+      save();
+    };
+  }
+}
+renderJournalPractice();
