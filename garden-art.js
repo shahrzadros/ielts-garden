@@ -1,4 +1,36 @@
+const gardenMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const catHop = [0, -4, -7, -9, -9, -7, -4, 0, 0, -3, -6, -7, -6, -3, 0, 0, 0, 0];
+const plantSway = [0, 2, 5, 7, 5, 2, 0, -2, -5, -7, -5, -2];
+let gardenHappy = false;
+let gardenFrame = null;
+let lastHop = 0;
+let lastSway = 0;
+
 function draw(happy) {
+  gardenHappy = happy;
+  paintGarden(happy, gardenMotion.matches ? 0 : lastHop, gardenMotion.matches ? 0 : lastSway);
+  if (!gardenMotion.matches && gardenFrame === null) {
+    gardenFrame = requestAnimationFrame(animateGarden);
+  }
+}
+
+function animateGarden(time) {
+  if (gardenMotion.matches) {
+    gardenFrame = null;
+    paintGarden(gardenHappy);
+    return;
+  }
+  const hop = catHop[Math.floor(time / 70) % catHop.length];
+  const sway = plantSway[Math.floor(time / 90) % plantSway.length];
+  if (hop !== lastHop || sway !== lastSway) paintGarden(gardenHappy, hop, sway);
+  gardenFrame = requestAnimationFrame(animateGarden);
+}
+
+gardenMotion.addEventListener("change", () => draw(gardenHappy));
+
+function paintGarden(happy, hop = 0, sway = 0) {
+  lastHop = hop;
+  lastSway = sway;
   const canvas = el("art");
   const ctx = canvas.getContext("2d");
   ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -8,10 +40,10 @@ function draw(happy) {
     ctx.fillRect(x, y, w, h);
   }
 
-  function sprite(x, y, rows, palette, scale = 1) {
+  function sprite(x, y, rows, palette, scale = 1, sway = 0) {
     rows.forEach((row, dy) => {
       [...row].forEach((pixel, dx) => {
-        if (palette[pixel]) rect(palette[pixel], x + dx * scale, y + dy * scale, scale, scale);
+        if (palette[pixel]) rect(palette[pixel], x + dx * scale + Math.round(sway * (1 - dy / (rows.length - 1))), y + dy * scale, scale, scale);
       });
     });
   }
@@ -52,7 +84,10 @@ function draw(happy) {
     "..otttptttto..",
     "...obbbbbbo...",
     "....oooooo....",
-  ], {o:"#22382b", g:"#6aa04d", G:"#b9d66d", t:"#d7925e", T:"#f6ba7e", b:"#b56945", k:"#493528", p:"#f5aaa0"}, 2);
+  ], {o:"#22382b", g:"#6aa04d", G:"#b9d66d", t:"#d7925e", T:"#f6ba7e", b:"#b56945", k:"#493528", p:"#f5aaa0"}, 2, sway);
+
+  ctx.save();
+  ctx.translate(0, hop);
 
   const outline = "#3f3028";
   const orange = "#e39850";
@@ -118,6 +153,8 @@ function draw(happy) {
   rect("#f4e4ab", 65, 10, 6, 4);
   rect("#fff4c8", 66, 9, 4, 3);
   rect("#c5af78", 66, 14, 4, 1);
+
+  ctx.restore();
 
   if (happy) {
     for (const [x, y] of [[47, 14], [88, 18], [79, 7], [100, 48]]) {
