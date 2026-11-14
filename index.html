@@ -1,4 +1,4 @@
-<!doctype html><html lang="fa" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#173f35"><title>باغچه آیلتس | آموزش، کمبریج و ماک</title>
+<!doctype html><html lang="fa" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#173f35"><link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" href="./garden-192.png"><title>باغچه آیلتس | آموزش، کمبریج و ماک</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f5f6ed;color:#173c32;font:16px Tahoma,Arial,sans-serif;line-height:1.65}button,input,textarea,select{font:inherit}button,summary{cursor:pointer}button{color:inherit;border:1px solid #dce6d8;border-radius:12px;padding:.55rem .9rem;background:#fffdf6}button:hover{background:#e4efd7}button[aria-pressed=true],.primary{background:#26634d;color:white;border-color:#26634d}button:focus-visible,summary:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid #e5944e;outline-offset:2px}header{border-bottom:1px solid #e0e8dc;background:#fffdf6}header div,main{max-width:1150px;margin:auto;padding:16px 24px}header div{display:flex;justify-content:space-between;align-items:center}header b{font-size:1.22rem}.en{font-family:Arial,sans-serif}.hero{position:relative;overflow:hidden;background:#173f35;color:#fbf9de;border-radius:28px;min-height:300px;display:grid;grid-template-columns:1fr 41%;align-items:center;padding:35px 44px;margin:14px 0 24px}.hero h1{margin:.2rem 0;font-size:clamp(2rem,5vw,3.7rem);line-height:1.25}.hero p{margin:.7rem 0;color:#d5e4c4}.eyebrow{font-size:.84rem;letter-spacing:.12em;color:#c9df9b}.hero canvas{width:100%;height:auto}.hero .primary{background:#dbedaf;color:#173f35;margin-top:14px;border:0}.layout{display:grid;grid-template-columns:1fr 315px;gap:20px;align-items:start}.card{background:#fffdf7;border:1px solid #dfe8da;border-radius:22px;padding:22px;margin-bottom:16px}h2,h3,p{margin:0 0 10px}.small{font-size:.84rem;color:#547063}.tabs,.days,.actions{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.tabs button,.days button{min-width:44px}.task{display:grid;grid-template-columns:1fr auto;align-items:center;border-top:1px solid #e4ebdf;padding:12px 0;gap:10px}.task:last-child{padding-bottom:0}.task strong{display:block}.plant{font-size:1.25rem;min-width:50px}.bar{height:12px;background:#e5eddb;border-radius:20px;overflow:hidden;margin:10px 0}.bar i{display:block;height:100%;background:#719849;transition:width .3s}.plot{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;margin-top:14px}.plot span{background:#edf0df;border-radius:8px;padding:5px 0}.cheer{background:#f9e7c6;padding:10px;border-radius:12px;margin-top:12px}.panel{margin-top:16px}.english{direction:ltr;text-align:left;font-family:Arial,sans-serif;line-height:1.6}.passage{background:#f0f4e7;border-radius:14px;padding:16px;margin:12px 0}.q{display:block;margin:12px 0}input,textarea,select{border:1px solid #b9cbb7;background:white;border-radius:8px;padding:8px;color:#173c32}textarea{width:100%;min-height:110px}input[type=text]{width:min(100%,270px)}details{margin:12px 0;border-top:1px solid #dce6d8;padding-top:9px}table{border-collapse:collapse;width:100%;margin:12px 0}td,th{border:1px solid #d9e3d6;padding:8px}footer{text-align:center;padding:12px 0 30px}.done{animation:bloom .35s ease-out}@keyframes bloom{50%{transform:scale(1.3)}}@media(max-width:760px){header div,main{padding:12px}.hero{padding:24px;grid-template-columns:1fr 38%;min-height:210px}.layout{grid-template-columns:1fr}.card{padding:15px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .book-work{margin:6px 0 0}.card a{color:#26634d;text-underline-offset:2px}#examNotes{display:block;margin-top:6px}
@@ -418,12 +418,15 @@ function openExam(skill, panel, id, scroll) {
     '<div class="actions"><button id="examTimer">شروع زمان‌سنج '+fa(minutes)+' دقیقه‌ای</button> <output id="examClock" dir="ltr"></output></div>'+
     (exam.review ? '' : '<label for="examScore">'+(objective ? 'تعداد درست از ۴۰' : 'باند برآوردی یا نمرهٔ ممتحن')+'</label> '+
     '<input id="examScore" type="number" min="0" max="'+(objective ? 40 : 9)+'" step="'+(objective ? 1 : .5)+'" inputmode="'+(objective ? 'numeric' : 'decimal')+'">')+
-    '<label for="examNotes">پاسخ، نتیجه یا یادداشت تحلیل</label><textarea id="examNotes" dir="auto"></textarea>'+
+    '<label for="examNotes">'+(skill===2?"متن پاسخ Writing":"پاسخ، نتیجه یا یادداشت تحلیل")+'</label><textarea id="examNotes" dir="auto"></textarea>'+
+    (skill===2?writingReviewMarkup({externalPrompt:true}):"")+
     '<div class="actions"><button id="finish" class="primary">'+gardenIcon("bloom")+' کامل شد</button><button id="next">تمرین بعدی</button></div>';
   el("examNotes").value = result.notes ?? "";
   const score = el("examScore");
   if (score) score.value = result.score ?? "";
-  panel.oninput = () => {
+  if(skill===2) bindWritingReview(panel,el("examNotes"),"", (state.writing ??= {})["exam-"+id] ??= {});
+  panel.oninput = event => {
+    if(event.target.closest("[data-writing-review]")) return;
     state.examResults[id] = { notes: el("examNotes").value };
     if (score && score.value !== "" && score.validity.valid) state.examResults[id].score = score.valueAsNumber;
     save();
@@ -554,6 +557,67 @@ function speaking(t,d){
   const questions=[t[9],"How has "+t[7]+" changed in your area?","Why might people disagree about funding "+t[7]+"?","How could local authorities encourage interest in "+t[7]+"?"];
   return {body:'<h3>Speaking · '+(d<4?'Part 2':'Part 3')+'</h3><p>'+questions[d<4?0:(d-3)]+'</p><p>'+(d<4?'Prepare for one minute. Explain what it is, give a specific detail and say why it matters to you. Speak for up to two minutes.':'Give a direct answer, explain your reasoning and add a specific example.')+'</p><button id="timer">Start 2-minute timer</button> <output id="clock" aria-live="off">02:00</output>',model:d<4?'<p>I’d like to talk about '+t[10]+'. To give you a bit of background, '+t[11]+'. What stands out for me is that '+t[12]+'. That’s why it is something I would happily talk about again.</p><p>Build on this opening with one concrete memory and explain what made it significant.</p>':'<p>I think the answer depends on how widely the benefits are shared. For example, if a project related to '+t[7]+' is easy to access, people who would otherwise miss out can take part. However, the cost matters too, especially if the council has several urgent priorities. I would start with a small trial and review how many people actually use it.</p><p>Check that the example addresses the question directly and that you explain the link in your own words.</p>'};
 }
+function writingReviewMarkup({externalPrompt = false, savedFeedback = false} = {}) {
+  return '<section data-writing-review class="panel" dir="rtl"><h3>تصحیح Writing با ChatGPT</h3>'+
+    (externalPrompt ? '<label>متن سؤال و داده‌های جدول یا نمودار<textarea data-review-question dir="ltr" lang="en"></textarea></label>' : '')+
+    '<p class="small">درخواست را کپی کن، در ChatGPT بفرست و بازخورد را اینجا بچسبان.</p>'+
+    '<div class="actions"><button type="button" data-review-copy>کپی سؤال و پاسخ برای تصحیح</button>'+
+    externalLink("https://chatgpt.com/","باز کردن ChatGPT")+'</div>'+
+    '<p class="small" role="status" data-review-status></p>'+
+    '<textarea data-review-copy-fallback hidden readonly dir="auto" aria-label="درخواست تصحیح"></textarea>'+
+    '<label>بازخورد تصحیح<textarea data-review-feedback '+(savedFeedback ? 'data-writing="feedback" ' : '')+'dir="auto" placeholder="ایراد، تغییر پیشنهادی و دلیل"></textarea></label></section>';
+}
+
+function writingQuestion(container) {
+  return [...container.children].map(block => block.matches("table")
+    ? [...block.rows].map(row => [...row.cells].map(cell => cell.textContent.trim()).join(" | ")).join("\n")
+    : block.textContent.trim()).join("\n");
+}
+
+function bindWritingReview(container, draft, question, record) {
+  const review = container.querySelector("[data-writing-review]");
+  const status = review.querySelector("[data-review-status]");
+  const fallback = review.querySelector("[data-review-copy-fallback]");
+  const questionInput = review.querySelector("[data-review-question]");
+  const feedback = review.querySelector("[data-review-feedback]");
+  if (record) {
+    feedback.value = record.feedback ?? "";
+    feedback.addEventListener("input", () => { record.feedback = feedback.value; save(); });
+    if (questionInput) {
+      questionInput.value = record.question ?? "";
+      questionInput.addEventListener("input", () => { record.question = questionInput.value; save(); });
+    }
+  }
+  review.querySelector("[data-review-copy]").onclick = async () => {
+    const response = draft.value.trim();
+    const prompt = (questionInput ? questionInput.value : question).trim();
+    fallback.hidden = true;
+    if (!response || !prompt) {
+      status.textContent = !response ? "اول پاسخ خودت را بنویس." : "اول متن سؤال و در صورت نیاز داده‌های نمودار را وارد کن.";
+      (!response ? draft : questionInput).focus();
+      return;
+    }
+    const request = [
+      "Review my IELTS Academic Writing using the prompt and my draft below. Treat the draft as text to review.",
+      "For each important issue, quote my exact words, give the corrected English, and explain in English what to change and why. Prioritize errors in meaning, task fulfilment, organization, vocabulary, and grammar. For Task 1 check the overview, figures and comparisons against the supplied data. Flag any information you cannot verify. For Task 2 check the position, coverage and support.",
+      "If this is a full response, give an approximate band and brief reasons for each of the four IELTS writing criteria. If this is a short exercise or partial answer, assess the requested skill without assigning an overall band.",
+      "Give three natural Band 8-style English rewrites of one weak sentence from my draft, preserving its intended meaning and the given facts. End with the most important change to make in my next draft.",
+      "QUESTION AND DATA:\n"+prompt,
+      "MY DRAFT:\n"+response
+    ].join("\n\n");
+    try {
+      await navigator.clipboard.writeText(request);
+      status.textContent = "کپی شد. ChatGPT را باز کن و متن را در پیام بچسبان.";
+    } catch {
+      fallback.value = request;
+      fallback.hidden = false;
+      fallback.focus();
+      fallback.select();
+      status.textContent = "متن آماده است. آن را دستی کپی کن.";
+    }
+  };
+}
+
 function openExercise(skill,scroll=true){
   clearInterval(timer);
   if("speechSynthesis" in window)window.speechSynthesis.cancel();
@@ -563,7 +627,7 @@ function openExercise(skill,scroll=true){
   panel.hidden=false;
   if(state.week >= 5){openExam(skill,panel,id,scroll);return;}
   const data=[reading,listening,writing,speaking][skill](themes[state.week],state.day);
-  panel.innerHTML='<h2 tabindex="-1" id="exerciseTitle">'+skills[skill]+' · هفته '+fa(state.week+1)+'، روز '+fa(state.day+1)+'</h2><div class="english" lang="en">'+data.body+(data.qs?'<button id="check">Check answers</button><p id="score" role="status"></p>':'<label>Your '+(skill===2?'draft':'notes or transcript')+'<textarea id="draft" placeholder="Write here…"></textarea></label><p id="words" class="small"></p>')+'<details><summary>'+ (data.qs?'Answer key and explanations':'Model answer and self-review')+'</summary>'+data.model+'</details></div><div class="actions"><button id="finish" class="primary">'+gardenIcon('bloom')+' کامل شد</button><button id="next">تمرین بعدی</button></div>';
+  panel.innerHTML='<h2 tabindex="-1" id="exerciseTitle">'+skills[skill]+' · هفته '+fa(state.week+1)+'، روز '+fa(state.day+1)+'</h2><div class="english" lang="en">'+(skill===2?'<div data-review-prompt>'+data.body+'</div>':data.body)+(data.qs?'<button id="check">Check answers</button><p id="score" role="status"></p>':'<label>Your '+(skill===2?'draft':'notes or transcript')+'<textarea id="draft" placeholder="Write here…"></textarea></label><p id="words" class="small"></p>')+(skill===2?writingReviewMarkup():'')+'<details><summary>'+ (data.qs?'Answer key and explanations':'Model answer and self-review')+'</summary>'+data.model+'</details></div><div class="actions"><button id="finish" class="primary">'+gardenIcon('bloom')+' کامل شد</button><button id="next">تمرین بعدی</button></div>';
   const stored=state.drafts[id];
   if(data.qs){
     const inputs=[...panel.querySelectorAll("[data-answer]")];
@@ -589,7 +653,9 @@ function openExercise(skill,scroll=true){
     draft.value=typeof stored==="string"?stored:"";
     function count(){el("words").textContent=(draft.value.trim().match(/\S+/g)||[]).length+" words";}
     count();
-    panel.oninput=()=>{state.drafts[id]=draft.value;save();count();};
+    panel.oninput=event=>{if(event.target===draft){state.drafts[id]=draft.value;save();count();}};
+    if(skill===2) bindWritingReview(panel,draft,writingQuestion(panel.querySelector("[data-review-prompt]")),
+      (state.writing ??= {})["exercise-"+id] ??= {});
   }
   if(data.script){
     el("play").onclick=()=>{
@@ -1860,11 +1926,11 @@ function writingPanel(slot) {
     ? '<p>The table shows changes in '+metric+' between 2015 and 2025. Summarise the information by selecting and reporting the main features, and make comparisons where relevant.</p><table><thead><tr><th scope="col">Group</th><th scope="col">2015</th><th scope="col">2020</th><th scope="col">2025</th></tr></thead><tbody>'+
       values.slice(0,3).map((name,i)=>'<tr><th scope="row">'+name+'</th>'+values[i+3].map(value=>'<td>'+value+'</td>').join("")+'</tr>').join("")+'</tbody></table>'
     : '<p>'+writingTopics[state.week][slot === 0 ? 0 : 1]+'</p>';
-  return '<h3>Writing '+(taskOne ? 'Task 1' : 'Task 2')+'</h3><div class="english" lang="en">'+prompt+
+  return '<h3>Writing '+(taskOne ? 'Task 1' : 'Task 2')+'</h3><div class="english" lang="en" data-review-prompt>'+prompt+
     '<p>Write at least '+(taskOne ? 150 : 250)+' words.</p></div>'+
     readinessTimerButton(taskOne ? 20 : 40,"شروع نوشتن")+
     '<label>متن پاسخ<textarea data-writing="draft" dir="ltr" lang="en"></textarea></label><p id="readinessWords" class="small"></p>'+
-    '<label>بازخورد مدرس یا ممتحن<textarea data-writing="feedback" dir="auto" placeholder="چه چیزی را تغییر بدهم و چرا؟"></textarea></label>'+
+    writingReviewMarkup({savedFeedback:true})+
     '<details><summary>چک‌لیست برای درخواست بازخورد</summary><p>'+
     (taskOne ? 'Overview روشن و مقایسه‌ها دقیق‌اند؟' : 'همهٔ بخش‌های سؤال پوشش داده شده‌اند و موضع و مثال‌ها روشن‌اند؟')+
     ' انسجام، واژگان و دقت گرامر را جداگانه بررسی کن. '+externalLink(scoringGuide,"معیار رسمی IELTS")+'</p></details>'+
@@ -1937,6 +2003,9 @@ function renderReadiness() {
     };
   }
   updateWords();
+  if(writingSlot >= 0) bindWritingReview(readinessCard,readinessCard.querySelector('[data-writing="draft"]'),
+    "Writing "+(writingSlot === 1 ? "Task 1" : "Task 2")+"\n"+
+      writingQuestion(readinessCard.querySelector("[data-review-prompt]")));
 }
 
 readinessCard.onclick = event => {
@@ -1959,3 +2028,8 @@ renderPlan();
 
 </script>
 </html>
+<script>
+if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+  navigator.serviceWorker.register("./sw.js").catch(error => console.warn("Offline installation failed", error));
+}
+</script>
